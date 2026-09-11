@@ -3,117 +3,49 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>智能电商客服 · 两级语义缓存 + ReAct 检索</title>
-    <meta name="description" content="两级语义缓存 + Validator 裁决 + ReAct 检索的智能电商客服中间件演示控制台" />
+    <title>智能电商客服 · 小智</title>
+    <meta name="description" content="基于知识库与大模型应答的智能电商客服" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <div class="app">
-      <header class="app-header">
-        <div class="brand">
-          <span class="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M12 3 4 7v10l8 4 8-4V7z" /><path d="M4 7l8 4 8-4" /><path d="M12 11v10" /></svg>
-          </span>
-          <div class="brand-text">
-            <h1>智能电商客服</h1>
-            <p>两级语义缓存 · Validator 三级裁决 · ReAct 检索</p>
-          </div>
-        </div>
-        <div class="header-right">
-          <div class="status is-pending" id="serviceStatus">
-            <span class="dot"></span>
-            <span class="status-text">检测服务中</span>
-          </div>
-        </div>
-      </header>
-
-      <main class="layout">
-        <!-- ============ 对话 ============ -->
-        <section class="chat card" aria-label="客服对话">
-          <div class="section-head">
-            <div class="section-title">
-              <h2>对话</h2>
-              <span class="hint" id="backendHint">离线预览</span>
+    <main class="stage">
+      <section class="console" aria-label="客服会话">
+        <header class="console-head">
+          <div class="identity">
+            <span class="monogram" aria-hidden="true">智</span>
+            <div class="identity-copy">
+              <span class="name">小智</span>
+              <span class="role">智能电商客服</span>
             </div>
-            <button class="icon-btn" id="clearBtn" type="button" aria-label="清空对话" title="清空对话">
-              <svg viewBox="0 0 24 24"><path d="M3 6h18" /><path d="M8 6V4h8v2" /><path d="m19 6-1 14H6L5 6" /><path d="M10 11v6" /><path d="M14 11v6" /></svg>
-            </button>
           </div>
+          <div class="head-right">
+            <span class="presence is-pending" id="presence">
+              <span class="dot"></span>
+              <span class="presence-text">连接中</span>
+            </span>
+            <button class="ghost-btn" id="resetBtn" type="button">新对话</button>
+          </div>
+        </header>
 
-          <div class="quick-row" id="quickPrompts" aria-label="示例问题"></div>
+        <div class="thread" id="thread" aria-live="polite"></div>
 
-          <div class="messages" id="messages" aria-live="polite"></div>
-
+        <div class="composer-wrap">
           <form class="composer" id="chatForm">
             <input
               id="questionInput"
               name="question"
               autocomplete="off"
-              placeholder="输入客户问题，例如：七天无理由退货需要满足什么条件？"
+              placeholder="请描述您的问题…"
               required
             />
-            <button class="send-btn" type="submit" aria-label="发送">
-              <span>发送</span>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13" /><path d="m22 2-7 20-4-9-9-4Z" /></svg>
+            <button class="send" id="sendBtn" type="submit" aria-label="发送">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5" /><path d="m5 12 7-7 7 7" /></svg>
             </button>
           </form>
-        </section>
-
-        <!-- ============ 链路与指标 ============ -->
-        <aside class="inspector" aria-label="命中详情">
-          <section class="card">
-            <div class="section-head">
-              <div class="section-title"><h2>请求链路</h2></div>
-              <span class="hint hint-route" id="routeBadge">等待请求</span>
-            </div>
-
-            <ol class="pipeline" id="pipeline">
-              <li data-stage="guardrail"><span class="pin">1</span><div class="stage-text"><strong>动态拦截</strong><small>实时问题直答</small></div></li>
-              <li data-stage="l1"><span class="pin">2</span><div class="stage-text"><strong>L1 规则缓存</strong><small>精确 / 编辑距离</small></div></li>
-              <li data-stage="l2"><span class="pin">3</span><div class="stage-text"><strong>L2 语义缓存</strong><small>bge-m3 向量召回</small></div></li>
-              <li data-stage="validator"><span class="pin">4</span><div class="stage-text"><strong>Validator 裁决</strong><small>复用 / 补全 / RAG</small></div></li>
-              <li data-stage="react"><span class="pin">5</span><div class="stage-text"><strong>ReAct 检索</strong><small>LangGraph 深度检索</small></div></li>
-            </ol>
-
-            <dl class="detail-grid" id="detailGrid">
-              <div><dt>缓存层</dt><dd>-</dd></div>
-              <div><dt>决策</dt><dd>-</dd></div>
-              <div><dt>延迟</dt><dd>-</dd></div>
-              <div><dt>LLM 调用</dt><dd>-</dd></div>
-            </dl>
-          </section>
-
-          <section class="card">
-            <div class="section-head">
-              <div class="section-title"><h2>离线评测</h2></div>
-              <button class="text-btn" id="refreshMetrics" type="button">刷新</button>
-            </div>
-            <div class="metrics" id="metricsGrid">
-              <div class="metric"><span>缓存覆盖率</span><strong>--</strong><small>冷启动</small></div>
-              <div class="metric"><span>直接复用率</span><strong>--</strong><small>冷启动</small></div>
-              <div class="metric"><span>LLM 调用节省</span><strong>--</strong><small>对照无缓存</small></div>
-              <div class="metric"><span>Token 节省</span><strong>--</strong><small>对照无缓存</small></div>
-              <div class="metric"><span>动态拦截</span><strong>--</strong><small>实时问题</small></div>
-              <div class="metric"><span>输入 Token 节省</span><strong>--</strong><small>对照无缓存</small></div>
-            </div>
-            <p class="metrics-note" id="metricsNote" hidden></p>
-          </section>
-
-          <section class="card trace-card">
-            <div class="section-head">
-              <div class="section-title"><h2>Trace</h2></div>
-            </div>
-            <pre id="traceBox">{}</pre>
-          </section>
-        </aside>
-      </main>
-
-      <footer class="app-footer">
-        <span>两级语义缓存 + ReAct 检索中间件</span>
-        <span class="dot-sep">·</span>
-        <span>LangChain / LangGraph · bge-m3 · Redis Stack</span>
-      </footer>
-    </div>
+          <p class="disclaimer">演示项目，回答由大模型结合商品与售后知识库生成，仅供参考。</p>
+        </div>
+      </section>
+    </main>
 
     <script src="./app.js"></script>
   </body>
