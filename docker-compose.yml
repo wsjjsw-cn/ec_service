@@ -1,0 +1,11 @@
+services:
+  redis-stack:
+    image: redis/redis-stack:7.2.0-v10
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    volumes:
+      - redis-stack-data:/data
+
+volumes:
+  redis-stack-data:

@@ -1,0 +1,6 @@
+[
+  {"sku": "P1001", "name": "AeroPods Pro 2 蓝牙耳机", "stock": 12, "price": 899, "updated_at": "2026-08-01T10:00:00+08:00"},
+  {"sku": "P1002", "name": "NovaBook Air 14 轻薄本", "stock": 0, "price": 5299, "updated_at": "2026-08-01T10:00:00+08:00"},
+  {"sku": "P1003", "name": "FitBand S9 智能手环", "stock": 54, "price": 299, "updated_at": "2026-08-01T10:00:00+08:00"},
+  {"sku": "P1004", "name": "HomeChef X5 空气炸锅", "stock": 8, "price": 499, "updated_at": "2026-08-01T10:00:00+08:00"}
+]

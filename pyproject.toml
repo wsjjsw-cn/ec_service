@@ -1,0 +1,39 @@
+[project]
+name = "semantic-commerce-cs"
+version = "0.1.0"
+description = "Two-level semantic cache and hybrid RAG demo for e-commerce customer service."
+requires-python = ">=3.10"
+dependencies = [
+  "fastapi>=0.111.0",
+  "uvicorn[standard]>=0.30.0",
+  "pydantic>=2.7.0",
+  "pydantic-settings>=2.3.0",
+  "redis>=5.0.0",
+  "redisvl>=0.3.0",
+  "numpy>=1.26.0",
+  "rapidfuzz>=3.9.0",
+  "httpx>=0.27.0",
+  # 代码中的硬依赖，此前缺失导致 pip install -e . 后无法运行
+  "langchain-core>=0.2.0",
+  "langgraph>=0.2.0",
+  "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+# 真实语义 embedding 后端（任选其一，推荐 semantic 即 fastembed + bge-small-zh）
+semantic = ["fastembed>=0.4.0"]
+torch = ["sentence-transformers>=3.0.0"]
+# DeepSeek / OpenAI 兼容 LLM
+llm = ["langchain-deepseek>=0.1.0", "langchain-openai>=0.2.0"]
+dev = [
+  "pytest>=8.2.0",
+  "ruff>=0.5.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

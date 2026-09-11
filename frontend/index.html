@@ -1,0 +1,85 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>智能电商客服控制台</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="chat-pane" aria-label="客服对话">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Semantic Cache RAG</p>
+            <h1>智能电商客服</h1>
+          </div>
+          <div class="status" id="serviceStatus">
+            <span class="status-dot"></span>
+            <span>检测服务中</span>
+          </div>
+        </header>
+
+        <div class="quick-row" id="quickPrompts" aria-label="示例问题"></div>
+
+        <div class="messages" id="messages" aria-live="polite"></div>
+
+        <form class="composer" id="chatForm">
+          <input
+            id="questionInput"
+            name="question"
+            autocomplete="off"
+            placeholder="输入客户问题，例如：七天无理由退货需要满足什么条件？"
+            required
+          />
+          <button class="icon-button send" type="submit" aria-label="发送">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4Z"/></svg>
+          </button>
+        </form>
+      </section>
+
+      <aside class="inspector" aria-label="命中详情">
+        <section class="panel compact">
+          <div class="panel-head">
+            <h2>当前链路</h2>
+            <button class="icon-button" id="clearBtn" type="button" aria-label="清空对话">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+            </button>
+          </div>
+          <div class="route-card" id="routeCard">
+            <span class="route-label">等待请求</span>
+            <strong>尚未触发</strong>
+            <p>发送问题后，这里会显示动态拦截、L1/L2 缓存或 RAG 路由。</p>
+          </div>
+          <dl class="kv-grid" id="detailGrid">
+            <div><dt>缓存层</dt><dd>-</dd></div>
+            <div><dt>决策</dt><dd>-</dd></div>
+            <div><dt>延迟</dt><dd>-</dd></div>
+            <div><dt>LLM 调用</dt><dd>-</dd></div>
+          </dl>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>离线评测</h2>
+            <button class="text-button" id="refreshMetrics" type="button">刷新</button>
+          </div>
+          <div class="metrics" id="metricsGrid">
+            <div class="metric"><span>动态拦截</span><strong>--</strong></div>
+            <div class="metric"><span>缓存覆盖</span><strong>--</strong></div>
+            <div class="metric"><span>直接复用</span><strong>--</strong></div>
+            <div class="metric"><span>吞吐提升</span><strong>--</strong></div>
+          </div>
+          <p class="metrics-note" id="metricsNote" style="display:none"></p>
+        </section>
+
+        <section class="panel trace-panel">
+          <h2>Trace</h2>
+          <pre id="traceBox">{}</pre>
+        </section>
+      </aside>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
